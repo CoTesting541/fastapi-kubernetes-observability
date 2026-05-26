@@ -1,0 +1,58 @@
+# ==========================================
+# Personal / Private Folders
+# ==========================================
+# Ignore the entire notes folder and everything inside it
+notes/
+
+# ==========================================
+# Environment & Secrets
+# ==========================================
+# Ignore local environment variable files
+.env
+.env.local
+*.env
+
+# ==========================================
+# Python Junk
+# ==========================================
+# Byte-compiled / optimized / dll files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Distribution / packaging
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ==========================================
+# Operating System Files
+# ==========================================
+# macOS clutter
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows clutter
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db

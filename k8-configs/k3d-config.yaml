@@ -1,0 +1,21 @@
+# k3d-config.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: platform
+
+servers: 1
+agents: 3
+
+kubeAPI:
+  host: "127.0.0.1"
+  hostPort: "50432"
+
+ports:
+  - port: 8080:80
+    nodeFilters:
+      - loadbalancer
+
+  - port: 8443:443
+    nodeFilters:
+      - loadbalancer
