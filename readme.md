@@ -1,46 +1,5 @@
 # Kubernetes-Based FastAPI Platform with Centralized Logging
 
-This project demonstrates a production-style microservice deployed on Kubernetes with full observability integration. It combines a FastAPI service with PostgreSQL and Redis, instrumented with centralized logging and monitoring to simulate real-world service debugging and reliability workflows.
-
-The goal of this project is to replicate how modern SRE teams observe, debug, and maintain distributed systems in a Kubernetes environment.
-
----
-
-## Architecture
-FastAPI service (stateless API layer)
-PostgreSQL (persistent datastore)
-Redis (caching layer)
-Kubernetes cluster (EKS-compatible)
-Grafana stack for observability:
-Grafana for visualization
-Loki for log aggregation
-Grafana Alloy for log/metric shipping
-
-## Observability Design
-
-### Logging
- * Container logs are collected at node level
- * Forwarded via Grafana Alloy
- * Centralized in Loki for structured querying
-
-### Metrics 
-* Request latency
-* Error rate
-* Service availability
-
-## Debug Workflow Simulated
-Identify failing endpoint via logs
-Correlate with metrics (latency spikes / errors)
-Trace container-level issues inside Kubernetes pods
-
-## Biggest Project issues encountered
-1. Loki write/read/backend pods trapped in a CrashLoopBackOff state during initialization. | The replication_factor was incorrectly nested under the limit block in the config
-2. Alloy agents running error-free but the grafana Explore dropdown was empty | Default config for alloy only included discovery task, no ingestion and write blocks in the config
-
----
-
-# Kubernetes-Based FastAPI Platform with Centralized Logging
-
 A cloud-native backend platform built around a FastAPI service running on Kubernetes with PostgreSQL for persistence, Redis for caching, and centralized log aggregation using Grafana Loki, Alloy, and Grafana.
 
 The project focuses on practical backend and platform engineering concepts:
@@ -61,16 +20,16 @@ The platform is split into three logical areas:
 
 * **FastAPI** service (`user-service`)
 * REST API endpoints for user operations
-* Logging integrated for observability
+* Logging added for observability
 
 ### Data Layer
 
 * **PostgreSQL** for persistent storage
-* **Redis** for caching frequently accessed data
+* **Redis** for caching 
 
 ### Observability Layer
 
-* **Grafana Loki** for centralized log aggregation
+* **Grafana Loki** for log aggregation
 * **Grafana Alloy** for Kubernetes log collection and metadata enrichment
 * **Grafana** for querying and visualizing logs
 * **MinIO** used as object storage backend for Loki
@@ -96,7 +55,7 @@ The platform is split into three logical areas:
 
 ## Kubernetes Layout
 
-The project is organized into namespaces to separate responsibilities:
+The project is organized into namespaces to separate the layers:
 
 * `dev` → application services
 * `data` → PostgreSQL and Redis
@@ -124,23 +83,6 @@ dev/
 ---
 
 ## Features
-
-### FastAPI Service
-
-* REST endpoints for user operations
-* Service deployed to Kubernetes
-* Containerized using Docker
-* Request logging enabled for debugging and monitoring
-
-### PostgreSQL Integration
-
-* Persistent relational storage
-* User data stored and queried through the API
-
-### Redis Caching
-
-* Cache layer for repeated requests
-* Reduced database lookups for frequently accessed data
 
 ### Centralized Logging
 
@@ -182,39 +124,8 @@ dev/
 ### Deploy to Kubernetes
 
 Install components using Helm manifests and Kubernetes resources.
-
-Typical workflow:
-
-```bash
-kubectl apply -f k8s/
-helm upgrade --install loki grafana/loki -n monitoring
-helm upgrade --install alloy grafana/alloy -n monitoring
-```
-
-Check workloads:
-
-```bash
-kubectl get pods -A
-```
-
----
-
-## Observability
-
-Example log query in Grafana Explore:
-
-```logql
-{namespace="dev"}
-```
-
-Filter by:
-
-* namespace
-* pod
-* container
-* application label
-
----
+rollout_app.ps1 and rollout_monitor.ps1 shell scripts added for easier deployment.
+Grafana need configuring when adding Loki as datasource, specially the url and http header/value
 
 ## Project Goals
 
@@ -243,6 +154,8 @@ Potential next steps:
 ---
 
 ## Reliability scenarios tested
+
+Trying to simulate SRE work environment by doing a few reliablity testing
 
 ### Pod crash recovery
 
@@ -276,30 +189,6 @@ Potential next steps:
 
 ---
 
-## Deployment
-Infrastructure deployed using Kubernetes manifests
-Services exposed internally within cluster networking
-Observability stack deployed as separate components
-(rollout_app.ps1 and rollout_monitor.ps1 added for easier deployment)
+## License
 
-## Key Learnings
-How distributed logs are used in production debugging
-Why centralized observability is critical in microservices
-Kubernetes service behavior under failure conditions
-How SRE workflows rely on telemetry
-
-## Future Improvements
-Add distributed tracing (OpenTelemetry)
-Add SLO-based alerting rules in Grafana
-Go away from global PostgreSQL database connection to session based
-Add Liveness, Readiness and Startup probes
----
-
-## Example Workflow
-1. A request reaches the FastAPI service
-2. The service queries Redis for cached data
-3. On cache miss, PostgreSQL is queried
-4. Application logs are generated
-5. Alloy collects logs from Kubernetes pods
-6. Loki indexes logs
-7. Grafana is used to query and inspect service behavior
+For learning and portfolio purposes.
